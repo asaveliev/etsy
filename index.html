@@ -1,1 +1,49 @@
-test
+<!DOCTYPE HTML>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+<script>
+var Artsy = {}
+
+Artsy.UrlGen = function(){
+	var key = "dtleuaslkd6qxspmwfwzmgmq";
+	var url = "https://openapi.etsy.com/v2/{controller}/{method}.js?api_key="+key;
+
+	return {
+		makeURL: function(controller,method){
+			return url.replace("{controller}",controller).replace("{method}",method);
+		}
+	}
+}
+
+Artsy.Listing = function(){
+	var urlGen = new Artsy.UrlGen();
+
+	return {
+		search: function(
+			limit,offset,page,keywords,sort_on,sort_order,min_price,max_price,color,color_accuracy,
+			tags,category,location,lat,lon,region,geo_level,accepts_gift_cards,translate_keywords
+			)
+		{
+            $.ajax({
+                url: urlGen.makeURL("listings","active"),
+                data: {
+					"limit":limit,"offset":offset,"page":page,"keywords":keywords,"sort_on":sort_on,"sort_order":sort_order,"min_price":min_price,"max_price":max_price,
+					"color":color,"color_accuracy":color_accuracy,"tags":tags,"category":category,"location":location,
+					"lat":lat,"lon":lon,"region":region,"geo_level":geo_level,"accepts_gift_cards":accepts_gift_cards,"translate_keywords":translate_keywords
+                },
+                dataType: 'jsonp',
+                success: function(data) {
+                    if (data.ok) {
+                    	alert(data.count);
+                    } else {
+                        alert(data.error);
+                    }
+                }
+            });			
+		}
+	}
+}
+
+var l = new Artsy.Listing();
+l.search(10,0,1,"test");
+</script>
