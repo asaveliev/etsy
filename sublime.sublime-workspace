@@ -8,19 +8,21 @@
 	"buffers":
 	[
 		{
+			"contents": "<!DOCTYPE HTML>\n<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js\"></script>\n\n<script>\nvar Artsy = {}\n\nArtsy.UrlGen = function(){\n	var key = \"dtleuaslkd6qxspmwfwzmgmq\";\n	var url = \"https://openapi.etsy.com/v2/{controller}/{method}.js?api_key=\"+key;\n\n	return {\n		makeURL: function(controller,method){\n			return url.replace(\"{controller}\",controller).replace(\"{method}\",method);\n		}\n	}\n}\n\nArtsy.Listing = function(){\n	var urlGen = new Artsy.UrlGen();\n\n	return {\n		search: function(\n			limit,offset,page,keywords,sort_on,sort_order,min_price,max_price,color,color_accuracy,\n			tags,category,location,lat,lon,region,geo_level,accepts_gift_cards,translate_keywords\n			)\n		{\n            $.ajax({\n                url: urlGen.makeURL(\"listings\",\"active\"),\n                data: {\n					\"limit\":limit,\"offset\":offset,\"page\":page,\"keywords\":keywords,\"sort_on\":sort_on,\"sort_order\":sort_order,\"min_price\":min_price,\"max_price\":max_price,\n					\"color\":color,\"color_accuracy\":color_accuracy,\"tags\":tags,\"category\":category,\"location\":location,\n					\"lat\":lat,\"lon\":lon,\"region\":region,\"geo_level\":geo_level,\"accepts_gift_cards\":accepts_gift_cards,\"translate_keywords\":translate_keywords\n                },\n                dataType: 'jsonp',\n                success: function(data) {\n                    if (data.ok) {\n                    	return data;\n                    } else {\n                        return null;\n                    }\n                }\n            });			\n		},\n\n		sorters: {\"created\", \"price\", \"score\" }\n	}\n}\n\nArtsy.SearchFormView = function(){\n	var template = \"<div class='searchform'><input class='textfield'></div>\";\n	return {\n		render : function(id){\n			$()\n		}\n	}\n}\n\nArtsy.SearchResultsView = function(){\n	var containertemplate = \"<div class='itemlist'>{Content}</div>\";\n	var itemtemplate = \"\n		<div class='item'>{Title}<br />{Description}</div>\n	\";\n	return {\n		render : function(id){\n\n		}\n	}\n}\n\n\n\nvar l = new Artsy.Listing();\nl.search(10,0,1,\"test\");\n</script>",
+			"file": "index.html",
+			"file_size": 2068,
+			"file_write_time": 130222960480699233,
+			"settings":
+			{
+				"buffer_size": 2001,
+				"line_ending": "Windows"
+			}
+		},
+		{
 			"file": "doc.html",
 			"settings":
 			{
 				"buffer_size": 1826,
-				"line_ending": "Windows",
-				"name": "The goal is to build a site that can search the Et"
-			}
-		},
-		{
-			"file": "index.html",
-			"settings":
-			{
-				"buffer_size": 19,
 				"line_ending": "Windows"
 			}
 		}
@@ -49,6 +51,8 @@
 	},
 	"file_history":
 	[
+		"/C/Users/Artem/Documents/Projects/etsy/doc.html",
+		"/C/Users/Artem/Documents/Projects/etsy/index.html"
 	],
 	"find":
 	{
@@ -83,11 +87,37 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
+					"file": "index.html",
+					"settings":
+					{
+						"buffer_size": 2001,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1695,
+								1695
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 660.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
 					"file": "doc.html",
 					"settings":
 					{
@@ -98,35 +128,8 @@
 						"selection":
 						[
 							[
-								1618,
-								1734
-							]
-						],
-						"settings":
-						{
-							"auto_name": "The goal is to build a site that can search the Et",
-							"syntax": "Packages/HTML/HTML.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "index.html",
-					"settings":
-					{
-						"buffer_size": 19,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								9,
-								9
+								0,
+								0
 							]
 						],
 						"settings":

@@ -1,4 +1,5 @@
 <!DOCTYPE HTML>
+<head>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
 <script>
@@ -19,11 +20,33 @@ Artsy.Listing = function(){
 	var urlGen = new Artsy.UrlGen();
 
 	return {
-		search: function(
+		search: function(callback,
 			limit,offset,page,keywords,sort_on,sort_order,min_price,max_price,color,color_accuracy,
 			tags,category,location,lat,lon,region,geo_level,accepts_gift_cards,translate_keywords
 			)
 		{
+			if (arguments.length == 2){
+				offset = limit.offset;
+				page = limit.page;
+				keywords = limit.keywords;
+				sort_on = limit.sort_on;
+				sort_order = limit.sort_order;
+				min_price = limit.min_price;
+				max_price = limit.max_price;
+				color = limit.color;
+				color_accuracy = limit.color_accuracy;
+				tags = limit.tags;
+				category = limit.category;
+				location = limit.location;
+				lat = limit.lat;
+				lon = limit.lon;
+				region = limit.region;
+				geo_level = limit.geo_level;
+				accepts_gift_cards = limit.accepts_gift_cards;
+				translate_keywords = limit.translate_keywords;
+				limit = limit.limit;
+			}
+
             $.ajax({
                 url: urlGen.makeURL("listings","active"),
                 data: {
@@ -34,16 +57,124 @@ Artsy.Listing = function(){
                 dataType: 'jsonp',
                 success: function(data) {
                     if (data.ok) {
-                    	alert(data.count);
+                    	callback(data);
                     } else {
-                        alert(data.error);
+                        return null;
                     }
                 }
             });			
+		},
+
+		sorters: ["created", "price", "score" ]
+	}
+}
+
+Artsy.SearchFormView = function(params){
+	var controller = params.Controller;
+	var template = "<div class='searchform'><input class='textfield' value='{Criteria}' /><input type='button' class='searchbutton' value='Search' /></div>";
+	var events = {
+		".searchbutton" : ["click",controller.search]
+	}
+	var id;
+
+
+	return {
+		render : function(criteria,htmlid){
+			if (htmlid != null) id = htmlid;
+			$("#"+id).html(template.replace("{Criteria}",criteria));
+
+			for(e in events)
+				$(e).on(events[e][0],events[e][1]);
+		},
+		getSearchCriteria: function(){
+			return $("#"+id+" .textfield").val();
 		}
 	}
 }
 
-var l = new Artsy.Listing();
-l.search(10,0,1,"test");
+Artsy.SearchResultsView = function(params){
+	var controller = params.Controller;
+	var containertemplate = "<div class='searchresults'> \
+		<div class='sorter'>{Sorters}</div> \
+		<div class='itemlist'>{Content}</div> \
+	</div>";
+	var itemtemplate = " \
+		<div class='item'>{title}<br />{price} {currency_code}</div> \
+	";
+	
+	var events = {
+		".sorter" : ["change", controller.resort]
+	};
+	var id;
+
+	var renderResults = function(data){
+		var res = "";
+		if (data != null)
+			for(listing in data.results){
+				var itemres = itemtemplate;
+				var item = data.results[listing];
+				for(field in item)
+					itemres = itemres.replace("{"+field+"}",item[field]);
+				res += itemres;
+			}
+		return res;
+	}
+
+	var render = function(data,htmlid){
+		if (htmlid != null) id = htmlid;
+		$("#"+id).html(containertemplate.replace("{Content}",renderResults(data)));
+		for(e in events)
+			$(e).on(events[e][0],events[e][1]);
+	}
+
+	return {
+		render : render,
+		setData: function(data){
+			data = data;
+			this.render();
+		}
+	}
+}
+
+Artsy.SearchController = function(){
+	var searcher, searchform, searchresultsview;
+	var searchcriteria = {};
+	var searchresults;
+
+	var search = function(){
+		searchcriteria.keywords = searchform.getSearchCriteria();
+		searcher.search(function(data){
+			searchresults = data;
+			searchresultsview.render(searchresults);
+		},searchcriteria);
+	}
+
+	return {
+		search : search,
+		searcher: searcher,
+		searchform: searchform,
+		searchresults: searchresultsview,
+		init : function(){
+			searchform = new Artsy.SearchFormView({Controller: this});
+			searcher = new Artsy.Listing();
+			searchresultsview = new Artsy.SearchResultsView({Controller: this});
+			searchform.render("","searchform");
+			searchresultsview.render(null,"searchresults");
+		}
+	}
+}
+
+var App = {}
+App.Search = new Artsy.SearchController();
+
+$(document).ready(function(){
+	App.Search.init();
+});
+
+
 </script>
+</head>
+<body>
+	<div id="searchform"></div>
+	<div id="searchresults"></div>
+</body>	
