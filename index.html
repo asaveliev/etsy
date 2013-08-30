@@ -16,55 +16,70 @@ Artsy.UrlGen = function(){
 	}
 }
 
+Artsy.Util = {}
+
+Artsy.Util.tokenize = function (querystring) {
+	// remove any preceding url and split
+	querystring = querystring.substring(querystring.indexOf('#')+1).split('&');
+	var params = {}, pair, d = decodeURIComponent;
+	// march and parse
+	for (var i = querystring.length - 1; i >= 0; i--) {
+		pair = querystring[i].split('=');
+		params[d(pair[0])] = d(pair[1]);
+	}
+
+	return params;
+}
+
+Artsy.Util.makepath = function (params) {
+	var res = "#";
+	for(e in params)
+		res += e + "=" + encodeURIComponent(params[e]) + "&";
+	return res;
+}
+
 Artsy.Listing = function(){
 	var urlGen = new Artsy.UrlGen();
 
+	var getCache = function(key,successcallback,fallback){
+		if(typeof(Storage)!=="undefined"){
+			if (sessionStorage[key] != null)
+				successcallback(JSON.parse(sessionStorage[key]));
+			else
+				fallback(function(result){
+					sessionStorage[key] = JSON.stringify(result);
+				});
+		}
+		else
+			fallback(function(){});
+	}
+
+	var search = function(callback,	params){
+		var key = Artsy.Util.makepath(params);
+		getCache(key,
+			function(data){
+				callback(data);
+			},
+			function(cachecallback){
+		        $.ajax({
+		            url: urlGen.makeURL("listings","active"),
+		            data: params,
+		            dataType: 'jsonp',
+		            success: function(data) {
+		                if (data.ok) {
+		                	cachecallback(data);
+		                	callback(data);
+		                } else {
+		                    return null;
+		                }
+		            }
+		        });
+    		}
+		);
+	}
+
 	return {
-		search: function(callback,
-			limit,offset,page,keywords,sort_on,sort_order,min_price,max_price,color,color_accuracy,
-			tags,category,location,lat,lon,region,geo_level,accepts_gift_cards,translate_keywords
-			)
-		{
-			if (arguments.length == 2){
-				offset = limit.offset;
-				page = limit.page;
-				keywords = limit.keywords;
-				sort_on = limit.sort_on;
-				sort_order = limit.sort_order;
-				min_price = limit.min_price;
-				max_price = limit.max_price;
-				color = limit.color;
-				color_accuracy = limit.color_accuracy;
-				tags = limit.tags;
-				category = limit.category;
-				location = limit.location;
-				lat = limit.lat;
-				lon = limit.lon;
-				region = limit.region;
-				geo_level = limit.geo_level;
-				accepts_gift_cards = limit.accepts_gift_cards;
-				translate_keywords = limit.translate_keywords;
-				limit = limit.limit;
-			}
-
-            $.ajax({
-                url: urlGen.makeURL("listings","active"),
-                data: {
-					"limit":limit,"offset":offset,"page":page,"keywords":keywords,"sort_on":sort_on,"sort_order":sort_order,"min_price":min_price,"max_price":max_price,
-					"color":color,"color_accuracy":color_accuracy,"tags":tags,"category":category,"location":location,
-					"lat":lat,"lon":lon,"region":region,"geo_level":geo_level,"accepts_gift_cards":accepts_gift_cards,"translate_keywords":translate_keywords
-                },
-                dataType: 'jsonp',
-                success: function(data) {
-                    if (data.ok) {
-                    	callback(data);
-                    } else {
-                        return null;
-                    }
-                }
-            });			
-		},
-
+		search: search,
 		sorters: ["created", "price", "score" ]
 	}
 }
@@ -152,18 +167,89 @@ Artsy.SearchResultsView = function(params){
 	}
 }
 
+Artsy.SearchDetailsView = function(params){
+	var controller = params.Controller;
+	var template = "<div class='listingdetail' data-id='{listing_id}''> \
+		<div class='listingshopsection'>{shop_section_id}</div> \
+		<div class='listingcategory'>{category_path} {category_path_ids}</div> \
+		<div class='listingtitle'><a href='{url}' target='_blank'>{title}</a></div> \
+		<div class='listingdescription'>{description}</div> \
+		<div class='listingtags'>{tags}</div> \
+		<div class='listingsocial'>Views: {views} Likes: {num_favorers}</div> \
+		<div class='listingdetailline'><span class='heading'>Status :</span>          <span class='value'>{state}</span></div> \
+		<div class='listingdetailline'><span class='heading'>User :</span>            <span class='value'>{user_id}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Category :</span>        <span class='value'>{category_id}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Created :</span>         <span class='value'>{creation_tsz}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Ends :</span>            <span class='value'>{ending_tsz}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Price :</span>           <span class='value'>{price} {currency_code}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Quantity :</span>        <span class='value'>{quantity}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Materials :</span>       <span class='value'>{materials}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Shipping :</span>        <span class='value'>{shipping_template_id}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Processing time :</span> <span class='value'>{processing_min} - {processing_max}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Made by :</span>         <span class='value'>{who_made}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Supply :</span>          <span class='value'>{is_supply}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Made in :</span>         <span class='value'>{when_made}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Made for :</span>        <span class='value'>{recipient}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Occasion :</span>        <span class='value'>{occasion}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Style :</span>           <span class='value'>{style}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Non-taxable :</span>     <span class='value'>{non_taxable}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Customizable :</span>    <span class='value'>{is_customizable}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Digital media:</span>    <span class='value'>{is_digital}</span></div> \
+		<div class='listingdetailline'><span class='heading'>Variations :</span>      <span class='value'>{has_variations}</span></div> \
+	</div>";
+	var events = {
+		".searchbutton" : ["click",controller.search]
+	}
+	var id;
+
+
+	return {
+		render : function(data,htmlid){
+			if (htmlid != null) id = htmlid;
+			var res = template;
+			if (data != null)
+				for(field in data)
+					res = res.replace("{"+field+"}",data[field]);
+			else
+				res = "";
+
+			$("#"+id).html(res);
+
+			for(e in events)
+				$("#"+id + " " + e).on(events[e][0],events[e][1]);
+		}
+	}
+}
+
 Artsy.SearchController = function(){
-	var searcher, searchform, searchresultsview;
+	var searcher, searchform, searchresultsview, searchdetailsview;
 	var searchcriteria = {};
 	var searchresults;
 
 	var search = function(){
-		searchcriteria.sort_on = searchresultsview.getSortOrder();
-		searchcriteria.keywords = searchform.getSearchCriteria();
-		searcher.search(function(data){
-			searchresults = data;
-			searchresultsview.render(searchresults);
-		},searchcriteria);
+		var params = {};
+		params.sort_on = searchresultsview.getSortOrder();
+		params.keywords = searchform.getSearchCriteria();
+		location.hash = Artsy.Util.makepath(params);
+	}
+
+	var details = function(){
+		listingid = $(this).attr("data-id");
+		for (item in searchresults.results)
+			if (searchresults.results[item].listing_id == listingid){
+				searchdetailsview.render(searchresults.results[item]);
+			}
+	}
+
+	var navigate = function(){
+		searchcriteria = Artsy.Util.tokenize(location.hash);
+		searchform.render(searchcriteria.keywords,"searchform");
+
+		if (location.hash != "")
+			searcher.search(function(data){
+				searchresults = data;
+				searchresultsview.render(searchresults);
+			},searchcriteria);
 	}
 
 	return {
@@ -171,12 +257,21 @@ Artsy.SearchController = function(){
 		searcher: searcher,
 		searchform: searchform,
 		searchresults: searchresultsview,
+		searchdetailsview: searchdetailsview,
+		details: details,
 		init : function(){
-			searchform = new Artsy.SearchFormView({Controller: this});
 			searcher = new Artsy.Listing();
+
+			searchform = new Artsy.SearchFormView({Controller: this});
 			searchresultsview = new Artsy.SearchResultsView({Controller: this});
+			searchdetailsview = new Artsy.SearchDetailsView({Controller: this});
+
 			searchform.render("","searchform");
-			searchresultsview.render(null,"searchresults");
+			searchdetailsview.render(null,"searchresults");
+			searchresultsview.render(null,"listingdetail");
+
+			window.onhashchange = navigate;
+			if (location.hash != "") navigate();
 		}
 	}
 }
@@ -190,8 +285,21 @@ $(document).ready(function(){
 
 
 </script>
+<style>
+.artsy .searchresults{
+	float:left;
+	width: 50%;
+}
+.artsy .listingdetail{
+	float:right;
+	width: 50%;
+}
+</style>
 </head>
 <body>
+<div class="artsy">
 	<div id="searchform"></div>
 	<div id="searchresults"></div>
+	<div id="listingdetail"></div>
+</div>
 </body>	
