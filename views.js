@@ -31,7 +31,7 @@ Artsy.SearchResultsView = function(params){
 		<div class='sorter'>Order by <select>{Sorters}</select></div> \
 		<div class='itemlist'>{Content}</div> \
 	</div>";
-	var pagertemplate = "<div class='pager'>{count} found <a class='prevpage'>&lt;prev </a> Page {pagination.effective_page} <a class='nextpage'>next&gt;</a></div>";
+	var pagertemplate = "<div class='pager'><span class='foundcount'>{count} found</span> <a class='prevpage'>&lt;prev </a> <span class='pagenumber'>Page {pagination.effective_page}</span> <a class='nextpage'>next&gt;</a></div>";
 
 	var itemtemplate = " \
 		<div class='item' data-id='{listing_id}'><span class='title'>{title}</span><br /><span class='price'>{price} {currency_code}</span></div> \
@@ -69,14 +69,10 @@ Artsy.SearchResultsView = function(params){
 		if (data != null){
 			var results = renderResults(data);
 			resulthtml = resulthtml.replace("{Content}",results);
-		}
-		else{
-			data = {count:0};
-		}
 
-		var pager = Artsy.Util.fillTemplate(data,pagertemplate);
-		resulthtml = resulthtml.replace("{Pager}",pager);
-
+			var pager = Artsy.Util.fillTemplate(data,pagertemplate);
+			resulthtml = resulthtml.replace("{Pager}",pager);
+		}
 
 		$("#"+id).html(resulthtml);
 		for(e in events)
@@ -99,10 +95,10 @@ Artsy.SearchDetailsView = function(params){
 	var controller = params.Controller;
 	var template = "<div class='listingdetailcontainer'><div class='listingdetail' data-id='{listing_id}''> \
 		<div class='listingshopsection'>{Shop.shop_name} / {Section.title}</div> \
-		<div class='listingcategory'><span class='heading'>Category:</span>           <span class='value'>{category_path}</span></div> \
 		<div class='listingtitle'><a href='{url}' target='_blank'>{title}</a></div> \
 		<div class='images'>{Images}</div> \
 		<div class='listingdescription'>{description}</div> \
+		<div class='listingcategory'><span class='heading'>Category:</span>           <span class='value'>{category_path}</span></div> \
 		<div class='listingtags'>{tags}</div> \
 		<div class='listingsocial'>Views: {views} Likes: {num_favorers}</div> \
 		<div class='listingdetailline'><span class='heading'>Status :</span>          <span class='value'>{state}</span></div> \

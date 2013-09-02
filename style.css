@@ -3,19 +3,6 @@
 	width: 50%;
 }
 
-.listingdetail .listingdetailline .false{
-	display:inline-block;
-	width:14px;
-	height:14px;
-	background: url(checkbox-unchecked.png);
-}
-
-.listingdetail .listingdetailline .true{
-	display:inline-block;
-	width:14px;
-	height:14px;
-	background: url(checkbox-checked.png);
-}
 
 body{
     font-family: sans-serif;
@@ -35,6 +22,7 @@ body{
     border-bottom: 1px rgb(214, 214, 247) solid;
     font-size: 10pt;
     padding: 7px;
+	cursor: pointer;
 }
 
 .searchresults .itemlist .item .title{
@@ -61,10 +49,101 @@ body{
 	padding: 10px;
 }
 
+.listingdetail div {
+	margin: 10px;
+}
+
+.listingdetail .listingtitle {
+	font-size: 16pt;
+}
+
 .listingdetail .listingshopsection {
     font-size: 15pt;
 }
 
 .listingdetail .listingcategory {
 	font-size: 10pt;
+}
+
+.listingdetail .listingdescription {
+}
+
+.listingdetail .listingtags {
+	font-size:9pt;
+	font-weight: bold;
+}
+
+.listingdetail .listingdetailline {
+	clear:both;
+	min-height: 15pt;
+}
+
+
+.listingdetail .listingdetailline .heading{
+	font-weight: bold;
+	display: inline-block;
+	width: 50%;
+	float: left;
+}
+
+.listingdetail .listingdetailline .value{
+	display: inline-block;
+	width: 50%;
+	float: right;
+}
+
+.listingdetail .listingdetailline .false{
+	display:inline-block;
+	width:14px;
+	height:14px;
+	background: url(checkbox-unchecked.png);
+	float: inherit;
+}
+
+.listingdetail .listingdetailline .true{
+	display:inline-block;
+	width:14px;
+	height:14px;
+	background: url(checkbox-checked.png);
+	float: inherit;
+}
+
+
+.listingdetail .listingshipping .heading {
+	font-weight: bold;
+	display: block;	
+}
+
+.listingdetail .listingshipping .value {
+	display: block;	
+	margin-left: 40px;
+	font-size: 10pt;
+}
+
+.listingdetail .listingshipping .value .shippingcountry {
+	font-weight: bold;
+}
+
+
+.pager {
+	float:left;
+}
+
+.pager .foundcount{
+	color: green;
+	font-size:10pt;
+	margin-right: 20px;
+}
+
+.pager .pagenumber{
+	color: green;
+	font-size:10pt;
+	text-transform: uppercase;
+}
+
+.pager .prevpage, .pager .nextpage {
+	color: blue;
+	font-size:10pt;
+	text-transform: uppercase;
+	cursor: pointer;
 }
