@@ -54,10 +54,19 @@ Artsy.SearchController = function(){
 	var searchresults;
 
 	var search = function(){
-		var params = {};
-		params.sort_on = searchresultsview.getSortOrder();
-		params.keywords = searchform.getSearchCriteria();
-		location.hash = Artsy.Util.makepath(params);
+		searchcriteria.sort_on = searchresultsview.getSortOrder();
+		searchcriteria.keywords = searchform.getSearchCriteria();
+		location.hash = Artsy.Util.makepath(searchcriteria);
+	}
+
+	var nextpage = function(){
+		searchcriteria.page++;
+		location.hash = Artsy.Util.makepath(searchcriteria);
+	}
+
+	var prevpage = function(){
+		if (searchcriteria.page>0) searchcriteria.page--;
+		location.hash = Artsy.Util.makepath(searchcriteria);
 	}
 
 	var details = function(){
@@ -75,6 +84,7 @@ Artsy.SearchController = function(){
 		if (location.hash != "")
 			searcher.search(function(data){
 				searchresults = data;
+				searchcriteria.page = data.pagination.effective_page;
 				searchresultsview.render(searchresults);
 			},searchcriteria);
 	}
@@ -86,6 +96,8 @@ Artsy.SearchController = function(){
 		searchresults: searchresultsview,
 		searchdetailsview: searchdetailsview,
 		details: details,
+		nextpage: nextpage,
+		prevpage: prevpage,
 		init : function(){
 			searcher = new Artsy.Listing();
 
@@ -94,8 +106,8 @@ Artsy.SearchController = function(){
 			searchdetailsview = new Artsy.SearchDetailsView({Controller: this});
 
 			searchform.render("","searchform");
-			searchdetailsview.render(null,"searchresults");
-			searchresultsview.render(null,"listingdetail");
+			searchresultsview.render(null,"searchresults");
+			searchdetailsview.render(null,"listingdetail");
 
 			$(window).on('hashchange', navigate);
 			if (location.hash != "") navigate();

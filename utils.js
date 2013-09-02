@@ -33,16 +33,20 @@ Artsy.Util.fillTemplate = function(data,template){
 		var p = path.splice(0,1)[0];
 		if (object[p] != null){
 			if (path.length == 0)
-				return (object[p] + "").replace("\\n","<br />");
+/*              TODO: prettier date formatting
+				if (object[p] instanceof Date)
+					return object[p].toLocaleTimeString() + "";
+				else */
+					return (object[p] + "").replace("\\n","<br />");
 			else
 				return walktree(object[p],path);
 		}
 		else
-			return null;
+			return "";
 	}
 
 	var res = template;
-	var matches = res.match(/\{\w+\}/g);
+	var matches = res.match(/\{[\w_\.]+\}/g);
 	for(i in matches)
 	{
 		var field = matches[i].replace("{","").replace("}","");

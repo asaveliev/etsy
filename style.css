@@ -1,0 +1,70 @@
+.searchresults{
+	float:left;
+	width: 50%;
+}
+
+.listingdetail .listingdetailline .false{
+	display:inline-block;
+	width:14px;
+	height:14px;
+	background: url(checkbox-unchecked.png);
+}
+
+.listingdetail .listingdetailline .true{
+	display:inline-block;
+	width:14px;
+	height:14px;
+	background: url(checkbox-checked.png);
+}
+
+body{
+    font-family: sans-serif;
+}
+
+.searchresults .sorter {
+	float: right;
+	padding-right: 10px;
+}
+
+
+.searchresults .itemlist {
+	clear: both;
+}
+
+.searchresults .itemlist .item {
+    border-bottom: 1px rgb(214, 214, 247) solid;
+    font-size: 10pt;
+    padding: 7px;
+}
+
+.searchresults .itemlist .item .title{
+    font-size: 11pt;
+}
+.searchresults .itemlist .item .price{
+	color: green;
+}
+
+
+.listingdetailcontainer {
+	margin: -1px;
+	border: 1px solid black;
+	float:right;
+	width: 50%;
+	background-color: white
+}
+
+.listingdetailcontainer .offscreen {
+
+}
+
+.listingdetail {
+	padding: 10px;
+}
+
+.listingdetail .listingshopsection {
+    font-size: 15pt;
+}
+
+.listingdetail .listingcategory {
+	font-size: 10pt;
+}
