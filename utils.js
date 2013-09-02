@@ -33,7 +33,7 @@ Artsy.Util.fillTemplate = function(data,template){
 		var p = path.splice(0,1)[0];
 		if (object[p] != null){
 			if (path.length == 0)
-				return object[p];
+				return (object[p] + "").replace("\\n","<br />");
 			else
 				return walktree(object[p],path);
 		}

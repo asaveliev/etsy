@@ -79,9 +79,10 @@ Artsy.SearchResultsView = function(params){
 Artsy.SearchDetailsView = function(params){
 	var controller = params.Controller;
 	var template = "<div class='listingdetail' data-id='{listing_id}''> \
-		<div class='listingshopsection'>{shop_section_id}</div> \
+		<div class='listingshopsection'>{Shop.shop_name} / {Section.title}</div> \
 		<div class='listingcategory'><span class='heading'>Category:</span>           <span class='value'>{category_path}</span></div> \
 		<div class='listingtitle'><a href='{url}' target='_blank'>{title}</a></div> \
+		<div class='images'>{Images}</div> \
 		<div class='listingdescription'>{description}</div> \
 		<div class='listingtags'>{tags}</div> \
 		<div class='listingsocial'>Views: {views} Likes: {num_favorers}</div> \
@@ -106,6 +107,7 @@ Artsy.SearchDetailsView = function(params){
 		<div class='listingdetailline'><span class='heading'>Digital media:</span>    <span class='value'>{is_digital}</span></div> \
 		<div class='listingdetailline'><span class='heading'>Variations :</span>      <span class='value'>{has_variations}</span></div> \
 	</div>";
+	var imagetemplate = "<img src='{url_170x135}'></img>"
 	var events = {
 		".searchbutton" : ["click",controller.search]
 	}
@@ -115,11 +117,20 @@ Artsy.SearchDetailsView = function(params){
 	return {
 		render : function(data,htmlid){
 			if (htmlid != null) id = htmlid;
-			var res = template;
-			if (data != null)
-				res = Artsy.Util.fillTemplate(data,template) 
+	
+			if (data != null){
+				var res = template;
+				var imagesres = "";
+				for(image in data.Images)
+					imagesres += Artsy.Util.fillTemplate(data.Images[image],imagetemplate);
+				res = res.replace("{Images}",imagesres);
+
+				res = Artsy.Util.fillTemplate(data,res);
+			}
 			else
 				res = "";
+
+
 
 			$("#"+id).html(res);
 
