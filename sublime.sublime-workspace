@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"back",
+				"background-color"
+			],
+			[
+				"Shipp",
+				"ShippingInfo	Default"
+			],
+			[
 				"searchresul",
 				"searchresultsview	Default"
 			]
@@ -12,10 +20,18 @@
 	"buffers":
 	[
 		{
-			"file": "index.html",
+			"file": "modelcontroller.js",
 			"settings":
 			{
-				"buffer_size": 9763,
+				"buffer_size": 3048,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "views.js",
+			"settings":
+			{
+				"buffer_size": 7129,
 				"line_ending": "Windows"
 			}
 		}
@@ -26,6 +42,30 @@
 		"height": 104.0,
 		"selected_items":
 		[
+			[
+				"push",
+				"Git: Push"
+			],
+			[
+				"commi",
+				"Git: Commit"
+			],
+			[
+				"add",
+				"Git: Add..."
+			],
+			[
+				"commit",
+				"Git: Commit"
+			],
+			[
+				"comm",
+				"Git: Commit"
+			],
+			[
+				"git add",
+				"Git: Add..."
+			],
 			[
 				"pull",
 				"Git: Pull"
@@ -56,8 +96,12 @@
 	},
 	"file_history":
 	[
-		"/C/Users/Artem/Documents/Projects/etsy/doc.html",
-		"/C/Users/Artem/Documents/Projects/etsy/index.html"
+		"/C/Users/Artem/Documents/Projects/etsy/utils.js",
+		"/C/Users/Artem/Documents/Projects/etsy/views.js",
+		"/C/Users/Artem/Documents/Projects/etsy/style.css",
+		"/C/Users/Artem/Documents/Projects/etsy/index.html",
+		"/C/Users/Artem/Documents/Projects/etsy/modelcontroller.js",
+		"/C/Users/Artem/Documents/Projects/etsy/doc.html"
 	],
 	"find":
 	{
@@ -98,26 +142,54 @@
 			[
 				{
 					"buffer": 0,
-					"file": "index.html",
+					"file": "modelcontroller.js",
 					"settings":
 					{
-						"buffer_size": 9763,
+						"buffer_size": 3048,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4424,
-								4424
+								1660,
+								1660
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.tmLanguage"
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1092.0,
+						"translation.y": 132.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "views.js",
+					"settings":
+					{
+						"buffer_size": 7129,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2144,
+								2144
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 792.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -185,6 +257,6 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 165.0,
+	"side_bar_width": 197.0,
 	"status_bar_visible": true
 }

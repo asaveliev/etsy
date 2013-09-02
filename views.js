@@ -31,7 +31,7 @@ Artsy.SearchResultsView = function(params){
 		<div class='sorter'>Order by <select>{Sorters}</select></div> \
 		<div class='itemlist'>{Content}</div> \
 	</div>";
-	var pagertemplate = "<div class='pager'>{count} found <a class='prevpage'>&lt;prev </a> <a class='nextpage'>next&gt;</a></div>";
+	var pagertemplate = "<div class='pager'>{count} found <a class='prevpage'>&lt;prev </a> Page {pagination.effective_page} <a class='nextpage'>next&gt;</a></div>";
 
 	var itemtemplate = " \
 		<div class='item' data-id='{listing_id}'><span class='title'>{title}</span><br /><span class='price'>{price} {currency_code}</span></div> \
@@ -63,14 +63,20 @@ Artsy.SearchResultsView = function(params){
 
 	var render = function(data,htmlid){
 		if (htmlid != null) id = htmlid;
-		var resulthtml = "";
+		var sorters = renderSorters();
+		var resulthtml = containertemplate.replace("{Sorters}",sorters);
+
 		if (data != null){
 			var results = renderResults(data);
-			var sorters = renderSorters();
-			var pager = Artsy.Util.fillTemplate(data,pagertemplate);
-
-			resulthtml = containertemplate.replace("{Content}",results).replace("{Sorters}",sorters).replace("{Pager}",pager);
+			resulthtml = resulthtml.replace("{Content}",results);
 		}
+		else{
+			data = {count:0};
+		}
+
+		var pager = Artsy.Util.fillTemplate(data,pagertemplate);
+		resulthtml = resulthtml.replace("{Pager}",pager);
+
 
 		$("#"+id).html(resulthtml);
 		for(e in events)

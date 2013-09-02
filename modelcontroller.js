@@ -4,10 +4,21 @@ Artsy.Listing = function(){
 	var getCache = function(key,successcallback,fallback){
 		if(typeof(Storage)!=="undefined"){
 			if (sessionStorage[key] != null)
-				successcallback(JSON.parse(sessionStorage[key]));
+				successcallback(JSON.parse(sessionStorage[key]).data);
 			else
 				fallback(function(result){
-					sessionStorage[key] = JSON.stringify(result);
+					try {
+						sessionStorage[key] = JSON.stringify({age:(new Date).getTime(),data:result});
+					}
+					catch (err) {
+						for(item in sessionStorage)
+							if (JSON.parse(sessionStorage[item]).age < ((new Date).getTime() - 3600000))
+								sessionStorage.removeItem(item);
+						try {
+							sessionStorage[key] = JSON.stringify({age:(new Date).getTime(),data:result});
+						}
+						catch (err) {}
+					}
 				});
 		}
 		else
@@ -56,6 +67,7 @@ Artsy.SearchController = function(){
 	var search = function(){
 		searchcriteria.sort_on = searchresultsview.getSortOrder();
 		searchcriteria.keywords = searchform.getSearchCriteria();
+		searchcriteria.page = 1;
 		location.hash = Artsy.Util.makepath(searchcriteria);
 	}
 

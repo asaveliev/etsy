@@ -20,12 +20,19 @@ Artsy.Util.tokenize = function (querystring) {
 	querystring = querystring.substring(querystring.indexOf('#')+1).split('&');
 	var params = {}, pair, d = decodeURIComponent;
 	// march and parse
-	for (var i = querystring.length - 1; i >= 0; i--) {
+	for (var i = 0; i < querystring.length; i++) {
 		pair = querystring[i].split('=');
 		params[d(pair[0])] = d(pair[1]);
 	}
 
 	return params;
+}
+
+Artsy.Util.makepath = function (params) {
+	var res = "";
+	for(e in params)
+		if (e) res += e + "=" + encodeURIComponent(params[e]) + "&";
+	return res;
 }
 
 Artsy.Util.fillTemplate = function(data,template){
@@ -56,9 +63,3 @@ Artsy.Util.fillTemplate = function(data,template){
 	return res;
 }
 
-Artsy.Util.makepath = function (params) {
-	var res = "";
-	for(e in params)
-		res += e + "=" + encodeURIComponent(params[e]) + "&";
-	return res;
-}
