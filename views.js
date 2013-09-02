@@ -74,6 +74,8 @@ Artsy.SearchResultsView = function(params){
 			resulthtml = resulthtml.replace("{Pager}",pager);
 		}
 
+		resulthtml = Artsy.Util.cleanTemplate(resulthtml);
+
 		$("#"+id).html(resulthtml);
 		for(e in events)
 			$("#"+id + " " + e).on(events[e][0],events[e][1]);
@@ -122,7 +124,7 @@ Artsy.SearchDetailsView = function(params){
 		<div class='listingshipping'><span class='heading'>Shipping :</span>        <span class='value'>{Shipping}</span></div> \
 	</div></div>";
 	var imagetemplate = "<img src='{url_170x135}'></img>";
-	var shippingtemplate = "<span class='shippingcountry'>{destination_country_name} :</span> {primary_cost} {currency_code}";
+	var shippingtemplate = "<div><span class='shippingcountry'>{destination_country_name} :</span> {primary_cost} {currency_code}</div>";
 	var shippingsecondarytemplate = " ({secondary_cost} {currency_code} with another item)";
 	var events = {
 		".searchbutton" : ["click",controller.search]
@@ -164,6 +166,23 @@ Artsy.SearchDetailsView = function(params){
 
 			for(e in events)
 				$("#"+id + " " + e).on(events[e][0],events[e][1]);
+		}
+	}
+}
+
+
+Artsy.LoadingView = function(params){
+	var controller = params.Controller;
+	var id;
+
+	return {
+		render : function(show,htmlid){
+			if (htmlid != null) id = htmlid;
+
+			if (show)
+				$("#"+id).addClass("show");
+			else
+				$("#"+id).removeClass("show");
 		}
 	}
 }

@@ -40,10 +40,9 @@ Artsy.Util.fillTemplate = function(data,template){
 		var p = path.splice(0,1)[0];
 		if (object[p] != null){
 			if (path.length == 0)
-/*              TODO: prettier date formatting
 				if (object[p] instanceof Date)
-					return object[p].toLocaleTimeString() + "";
-				else */
+					return object[p].toLocaleString();
+				else 
 					return (object[p] + "").replace("\\n","<br />");
 			else
 				return walktree(object[p],path);
@@ -63,3 +62,6 @@ Artsy.Util.fillTemplate = function(data,template){
 	return res;
 }
 
+Artsy.Util.cleanTemplate = function(template){
+	return template.replace(/\{[\w_\.]+\}/g,"");
+}

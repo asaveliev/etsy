@@ -62,7 +62,6 @@ body{
 }
 
 .listingdetail .listingcategory {
-	font-size: 10pt;
 }
 
 .listingdetail .listingdescription {
@@ -73,20 +72,20 @@ body{
 	font-weight: bold;
 }
 
-.listingdetail .listingdetailline {
+.listingdetail .listingdetailline, .listingdetail .listingcategory {
 	clear:both;
 	min-height: 15pt;
 }
 
 
-.listingdetail .listingdetailline .heading{
+.listingdetail .listingdetailline .heading, .listingdetail .listingcategory .heading{
 	font-weight: bold;
 	display: inline-block;
 	width: 50%;
 	float: left;
 }
 
-.listingdetail .listingdetailline .value{
+.listingdetail .listingdetailline .value, .listingdetail .listingcategory .value{
 	display: inline-block;
 	width: 50%;
 	float: right;
@@ -146,4 +145,18 @@ body{
 	font-size:10pt;
 	text-transform: uppercase;
 	cursor: pointer;
+}
+
+#loading {
+	display: none;
+}
+
+#loading.show{
+	display:block;
+	position:absolute;
+	top: 50pt;
+	left: 50pt;
+	width: 32px;
+	height: 32px;
+	background: url(ajax-loader.gif);
 }

@@ -43,8 +43,11 @@ Artsy.Listing = function(){
 		                	cachecallback(data);
 		                	callback(data);
 		                } else {
-		                    return null;
+		                    callback(null);
 		                }
+		            },
+		            error: function(){
+	                    callback(null);
 		            }
 		        });
     		}
@@ -60,7 +63,7 @@ Artsy.Listing = function(){
 
 
 Artsy.SearchController = function(){
-	var searcher, searchform, searchresultsview, searchdetailsview;
+	var searcher, searchform, searchresultsview, searchdetailsview, loadingview;
 	var searchcriteria = {};
 	var searchresults;
 
@@ -93,12 +96,16 @@ Artsy.SearchController = function(){
 		searchcriteria = Artsy.Util.tokenize(location.hash);
 		searchform.render(searchcriteria.keywords,"searchform");
 
-		if (location.hash != "")
+		if (location.hash != ""){
+			loadingview.render(true);
+			searchresultsview.render(null);
 			searcher.search(function(data){
+				loadingview.render(false);
 				searchresults = data;
 				searchcriteria.page = data.pagination.effective_page;
 				searchresultsview.render(searchresults);
 			},searchcriteria);
+		}
 	}
 
 	return {
@@ -107,6 +114,7 @@ Artsy.SearchController = function(){
 		searchform: searchform,
 		searchresults: searchresultsview,
 		searchdetailsview: searchdetailsview,
+		loadingview: loadingview,
 		details: details,
 		nextpage: nextpage,
 		prevpage: prevpage,
@@ -116,10 +124,12 @@ Artsy.SearchController = function(){
 			searchform = new Artsy.SearchFormView({Controller: this});
 			searchresultsview = new Artsy.SearchResultsView({Controller: this});
 			searchdetailsview = new Artsy.SearchDetailsView({Controller: this});
+			loadingview = new Artsy.LoadingView({Controller: this});
 
 			searchform.render("","searchform");
 			searchresultsview.render(null,"searchresults");
 			searchdetailsview.render(null,"listingdetail");
+			loadingview.render(null,"loading");
 
 			$(window).on('hashchange', navigate);
 			if (location.hash != "") navigate();
