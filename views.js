@@ -34,14 +34,17 @@ Artsy.SearchResultsView = function(params){
 	var pagertemplate = "<div class='pager'><span class='foundcount'>{count} found</span> <a class='prevpage'>&lt;prev </a> <span class='pagenumber'>Page {pagination.effective_page}</span> <a class='nextpage'>next&gt;</a></div>";
 
 	var itemtemplate = " \
-		<div class='item' data-id='{listing_id}'><span class='title'>{title}</span><br /><span class='price'>{price} {currency_code}</span></div> \
+		<div class='item' data-id='{listing_id}'><span class='title'>{title}</span><br /><span class='price'>{price} {currency_code}</span> \
+			<input type='button' value='Hide' class='hideitem'> \
+		</div> \
 	";
 	
 	var events = {
 		".sorter"     : ["change",  controller.search],
 		".item"       : ["click",   controller.details],
 		".nextpage"   : ["click",   controller.nextpage],
-		".prevpage"   : ["click",   controller.prevpage]
+		".prevpage"   : ["click",   controller.prevpage],
+		".hideitem"   : ["click",   controller.hideitem]
 	};
 	var id;
 

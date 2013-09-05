@@ -29,6 +29,7 @@ Artsy.Listing = function(){
 		var key = Artsy.Util.makepath(params);
 		getCache(key,
 			function(data){
+				data = filteritems(data);
 				callback(data);
 			},
 			function(cachecallback){
@@ -41,6 +42,7 @@ Artsy.Listing = function(){
 		            success: function(data) {
 		                if (data.ok) {
 		                	cachecallback(data);
+		                	data = filteritems(data);
 		                	callback(data);
 		                } else {
 		                    callback(null);
@@ -54,8 +56,26 @@ Artsy.Listing = function(){
 		);
 	}
 
+	var hideitem = function(listingid){
+		if(typeof(Storage)!=="undefined"){
+			var key = "hide-"+listingid;
+			if (localStorage.getItem(key) == null)
+				localStorage.setItem(key,"hide");
+		}
+	}
+
+	var filteritems = function(items){
+		if(typeof(Storage)!=="undefined")
+			for(var i=items.results.length-1;i>=0;i--)
+				if (localStorage.getItem("hide-"+ items.results[i].listing_id + ""))
+					items.results.splice(i,1);
+
+		return items;
+	}
+
 	return {
 		search: search,
+		hideitem: hideitem,
 		sorters: ["created", "price", "score" ]
 	}
 }
@@ -85,11 +105,18 @@ Artsy.SearchController = function(){
 	}
 
 	var details = function(){
-		listingid = $(this).attr("data-id");
+		listingid = $(this).closest("[data-id]").attr("data-id");
 		for (item in searchresults.results)
 			if (searchresults.results[item].listing_id == listingid){
 				searchdetailsview.render(searchresults.results[item]);
 			}
+	}
+
+	var hideitem = function(event){
+		listingid = $(this).closest("[data-id]").attr("data-id");
+		searcher.hideitem(listingid)
+		event.stopPropagation();
+		navigate();
 	}
 
 	var navigate = function(){
@@ -118,6 +145,7 @@ Artsy.SearchController = function(){
 		details: details,
 		nextpage: nextpage,
 		prevpage: prevpage,
+		hideitem: hideitem,
 		init : function(){
 			searcher = new Artsy.Listing();
 
