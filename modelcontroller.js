@@ -100,13 +100,13 @@ Artsy.SearchController = function(){
 	}
 
 	var prevpage = function(){
-		if (searchcriteria.page>0) searchcriteria.page--;
+		if (searchcriteria.page>1) searchcriteria.page--;
 		location.hash = Artsy.Util.makepath(searchcriteria);
 	}
 
 	var details = function(){
 		listingid = $(this).closest("[data-id]").attr("data-id");
-		for (item in searchresults.results)
+		for (var item in searchresults.results)
 			if (searchresults.results[item].listing_id == listingid){
 				searchdetailsview.render(searchresults.results[item]);
 			}

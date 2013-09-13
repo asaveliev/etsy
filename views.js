@@ -48,11 +48,14 @@ Artsy.SearchResultsView = function(params){
 	};
 	var id;
 
-	var renderSorters = function(){
+	var renderSorters = function(data){
 		var s = new Artsy.Listing();
 		var res = "";
-		for(sorter in s.sorters)
-			res += "<option>"+s.sorters[sorter]+"</option>"
+		for(sorter in s.sorters){
+			res += "<option";
+			if (data != null && data.params.sort_on == s.sorters[sorter]) res += " selected "
+			res += ">" + s.sorters[sorter] + "</option>";
+		}
 		return res;
 	}
 
@@ -66,10 +69,11 @@ Artsy.SearchResultsView = function(params){
 
 	var render = function(data,htmlid){
 		if (htmlid != null) id = htmlid;
-		var sorters = renderSorters();
+		var sorters = renderSorters(data);
 		var resulthtml = containertemplate.replace("{Sorters}",sorters);
 
 		if (data != null){
+
 			var results = renderResults(data);
 			resulthtml = resulthtml.replace("{Content}",results);
 
